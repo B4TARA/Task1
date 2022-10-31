@@ -1,0 +1,26 @@
+CREATE TABLE task
+(
+	RDate date,
+	REng VARCHAR(10),
+	RRus VARCHAR(10),
+	RInt int,
+	RDouble float
+)
+
+create PROCEDURE insert_data(RDate timestamp without time zone, REng text, RRus text, RInt integer, RDouble double precision)
+LANGUAGE SQL
+AS $$
+INSERT INTO Task VALUES (RDate, REng, RRus, RInt, RDouble);
+$$;
+
+create function sum_med()
+returns table(summ bigint, med double precision)
+as
+$$
+	begin
+		return query
+		SELECT SUM(RInt), percentile_disc(0.5) WITHIN GROUP (ORDER BY RDouble)
+        FROM Task;
+    end;
+$$
+language plpgsql;
